@@ -10,17 +10,26 @@ public struct JUnitReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<testsuites><testsuite>" +
-            violations.map({ violation -> String in
-                let fileName = (violation.location.file ?? "<nopath>").escapedForXML()
-                let severity = violation.severity.rawValue + ":\n"
-                let message = severity + "Line:" + String(violation.location.line ?? 0) + " "
-                let reason = violation.reason.escapedForXML()
-                return [
-                    "\n\t<testcase classname='Formatting Test' name='\(fileName)\'>\n",
-                    "<failure message='\(reason)\'>" + message + "</failure>",
-                    "\t</testcase>"
-                ].joined()
-            }).joined() + "\n</testsuite></testsuites>"
+        """
+        <?xml version="1.0" encoding="utf-8"?>
+        <testsuites>
+            <testsuite>
+        \(violations.map({ violation -> String in
+            let location = violation.location
+            let fileName = (location.relativeFile ?? "<nopath>").escapedForXML()
+            let severity = violation.severity.rawValue
+            let lineNumber = String(location.line ?? 0)
+            let reason = violation.reason.escapedForXML()
+            return """
+                    <testcase classname='Formatting Test' name='\(fileName)\'>
+                        <failure message='\(reason)\'>\(severity):
+            Line:\(lineNumber) </failure>
+                    </testcase>
+            """
+        }).joined(separator: "\n"))
+            </testsuite>
+        </testsuites>
+
+        """
     }
 }

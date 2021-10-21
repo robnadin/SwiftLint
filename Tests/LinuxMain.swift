@@ -1376,7 +1376,7 @@ extension ReporterTests {
         ("testCSVReporter", testCSVReporter),
         ("testCheckstyleReporter", testCheckstyleReporter),
         ("testCodeClimateReporter", testCodeClimateReporter),
-        ("testJunitReporter", testJunitReporter),
+        ("testJUnitReporter", testJUnitReporter),
         ("testHTMLReporter", testHTMLReporter),
         ("testSonarQubeReporter", testSonarQubeReporter),
         ("testMarkdownReporter", testMarkdownReporter)

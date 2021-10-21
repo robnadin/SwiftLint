@@ -28,8 +28,12 @@ class ReporterTests: XCTestCase {
         return SwiftLintFile(path: "\(testResourcesPath)/\(filename)")!.contents
     }
 
-    private func generateViolations() -> [StyleViolation] {
-        let location = Location(file: "filename", line: 1, character: 2)
+    private func generateViolations(absolutePaths: Bool = true) -> [StyleViolation] {
+        var file = "filename"
+        if absolutePaths {
+            file = FileManager.default.currentDirectoryPath + "/" + file
+        }
+        let location = Location(file: file, line: 1, character: 2)
         return [
             StyleViolation(ruleDescription: LineLengthRule.description,
                            location: location,
@@ -52,13 +56,13 @@ class ReporterTests: XCTestCase {
 
     func testXcodeReporter() {
         let expectedOutput = stringFromFile("CannedXcodeReporterOutput.txt")
-        let result = XcodeReporter.generateReport(generateViolations())
+        let result = XcodeReporter.generateReport(generateViolations(absolutePaths: false))
         XCTAssertEqual(result, expectedOutput)
     }
 
     func testEmojiReporter() {
         let expectedOutput = stringFromFile("CannedEmojiReporterOutput.txt")
-        let result = EmojiReporter.generateReport(generateViolations())
+        let result = EmojiReporter.generateReport(generateViolations(absolutePaths: false))
         XCTAssertEqual(result, expectedOutput)
     }
 
@@ -87,30 +91,30 @@ class ReporterTests: XCTestCase {
 
     func testJSONReporter() throws {
         let expectedOutput = stringFromFile("CannedJSONReporterOutput.json")
-        let result = JSONReporter.generateReport(generateViolations())
+        let result = JSONReporter.generateReport(generateViolations(absolutePaths: false))
         XCTAssertEqual(try jsonValue(result), try jsonValue(expectedOutput))
     }
 
     func testCSVReporter() {
         let expectedOutput = stringFromFile("CannedCSVReporterOutput.csv")
-        let result = CSVReporter.generateReport(generateViolations())
+        let result = CSVReporter.generateReport(generateViolations(absolutePaths: false))
         XCTAssertEqual(result, expectedOutput)
     }
 
     func testCheckstyleReporter() {
         let expectedOutput = stringFromFile("CannedCheckstyleReporterOutput.xml")
-        let result = CheckstyleReporter.generateReport(generateViolations())
+        let result = CheckstyleReporter.generateReport(generateViolations(absolutePaths: false))
         XCTAssertEqual(result, expectedOutput)
     }
 
     func testCodeClimateReporter() {
         let expectedOutput = stringFromFile("CannedCodeClimateReporterOutput.json")
-        let result = CodeClimateReporter.generateReport(generateViolations())
+        let result = CodeClimateReporter.generateReport(generateViolations(absolutePaths: false))
         XCTAssertEqual(result, expectedOutput)
     }
 
-    func testJunitReporter() {
-        let expectedOutput = stringFromFile("CannedJunitReporterOutput.xml")
+    func testJUnitReporter() {
+        let expectedOutput = stringFromFile("CannedJUnitReporterOutput.xml")
         let result = JUnitReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
@@ -133,7 +137,7 @@ class ReporterTests: XCTestCase {
 
     func testMarkdownReporter() {
         let expectedOutput = stringFromFile("CannedMarkdownReporterOutput.md")
-        let result = MarkdownReporter.generateReport(generateViolations())
+        let result = MarkdownReporter.generateReport(generateViolations(absolutePaths: false))
         XCTAssertEqual(result, expectedOutput)
     }
 }

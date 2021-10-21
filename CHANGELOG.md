@@ -10,7 +10,9 @@
 
 #### Enhancements
 
-* None.
+* Use relative file locations for JUnit reporter, fixed case-sensitive spelling
+  of `JUnit`, and updated output formatting.
+  [Rob Nadin](https://github.com/robnadin)
 
 #### Bug Fixes
 
